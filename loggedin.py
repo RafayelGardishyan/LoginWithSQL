@@ -1,4 +1,6 @@
 from appJar import gui
+import sqlite3
+
 
 
 class welcome:
