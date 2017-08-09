@@ -2,6 +2,7 @@ from main import *
 import sqlite3
 from loggedin import *
 from appJar import gui
+import re
 
 
 class dbActions:
@@ -45,21 +46,24 @@ class register:
         eml = self.app.getEntry("Email")
         if len(unm)> 0:
             if len(eml) > 0:
-                if len(nam) > 0:
-                    if len(pwd) > 5:
-                        if pwd == cpwd:
-                            if data.commitData(unm, eml, pwd, nam, self.already):
-                                self.app.infoBox("Success", "You are successfully registered! Congratulations")
-                                self.app.stop()
-                                contin = login()
+                if re.match('[^@]+@[^@]+\.[^@]+', eml):
+                    if len(nam) > 0:
+                        if len(pwd) > 5:
+                            if pwd == cpwd:
+                                if data.commitData(unm, eml, pwd, nam, self.already):
+                                    self.app.infoBox("Success", "You are successfully registered! Congratulations")
+                                    self.app.stop()
+                                    contin = login()
+                                else:
+                                    self.app.warningBox("Error", "Database Error, Try again later")
                             else:
-                                self.app.warningBox("Error", "Database Error, Try again later")
+                                self.app.warningBox("Error", "The Passwords do not match")
                         else:
-                            self.app.warningBox("Error", "The Passwords do not match")
+                            self.app.warningBox("Error", "The Password must contain more than 6 letters")
                     else:
-                        self.app.warningBox("Error", "The Password must contain more than 6 letters")
+                        self.app.warningBox("Error", "You have to fill in your Name")
                 else:
-                    self.app.warningBox("Error", "You have to fill in your Name")
+                    self.app.warningBox("Error", "You have to fill in a valid email")
             else:
                 self.app.warningBox("Error", "You have to fill in your Email")
         else:
